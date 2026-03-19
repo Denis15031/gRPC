@@ -7,14 +7,15 @@
 package api
 
 import (
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
 )
 
 const (
@@ -27,19 +28,22 @@ const (
 type Role int32
 
 const (
-	Role_ROLE_USER  Role = 0
-	Role_ROLE_ADMIN Role = 1
+	Role_ROLE_UNSPECIFIED Role = 0
+	Role_ROLE_USER        Role = 1
+	Role_ROLE_ADMIN       Role = 2
 )
 
 // Enum value maps for Role.
 var (
 	Role_name = map[int32]string{
-		0: "ROLE_USER",
-		1: "ROLE_ADMIN",
+		0: "ROLE_UNSPECIFIED",
+		1: "ROLE_USER",
+		2: "ROLE_ADMIN",
 	}
 	Role_value = map[string]int32{
-		"ROLE_USER":  0,
-		"ROLE_ADMIN": 1,
+		"ROLE_UNSPECIFIED": 0,
+		"ROLE_USER":        1,
+		"ROLE_ADMIN":       2,
 	}
 )
 
@@ -75,8 +79,8 @@ type CreateUserRequest struct {
 	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Email           string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password        string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	PasswordConfirm string                 `protobuf:"bytes,4,opt,name=password_confirm,json=passwordConfirm,proto3" json:"password_confirm,omitempty"`
-	Role            Role                   `protobuf:"varint,5,opt,name=role,proto3,enum=api.Role" json:"role,omitempty"`
+	PasswordConfirm string `protobuf:"bytes,4,opt,name=password_confirm,json=passwordConfirm,proto3" json:"password_confirm,omitempty"`
+	Role            Role   `protobuf:"varint,5,opt,name=role,proto3,enum=api.Role" json:"role,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -143,7 +147,7 @@ func (x *CreateUserRequest) GetRole() Role {
 	if x != nil {
 		return x.Role
 	}
-	return Role_ROLE_USER
+	return Role_ROLE_UNSPECIFIED
 }
 
 type CreateUserResponse struct {
@@ -238,9 +242,9 @@ type GetUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Role          Role                   `protobuf:"varint,4,opt,name=role,proto3,enum=api.Role" json:"role,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Email     string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	Role      Role                   `protobuf:"varint,4,opt,name=role,proto3,enum=api.Role" json:"role,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -301,7 +305,7 @@ func (x *GetUserResponse) GetRole() Role {
 	if x != nil {
 		return x.Role
 	}
-	return Role_ROLE_USER
+	return Role_ROLE_UNSPECIFIED
 }
 
 func (x *GetUserResponse) GetCreatedAt() *timestamppb.Timestamp {
@@ -653,11 +657,12 @@ const file_proto_api_proto_rawDesc = "" +
 	"\x12SendMessageRequest\x12\x12\n" +
 	"\x04from\x18\x01 \x01(\tR\x04from\x12\x12\n" +
 	"\x04text\x18\x02 \x01(\tR\x04text\x128\n" +
-	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp*%\n" +
-	"\x04Role\x12\r\n" +
-	"\tROLE_USER\x10\x00\x12\x0e\n" +
+	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp*;\n" +
+	"\x04Role\x12\x14\n" +
+	"\x10ROLE_UNSPECIFIED\x10\x00\x12\r\n" +
+	"\tROLE_USER\x10\x01\x12\x0e\n" +
 	"\n" +
-	"ROLE_ADMIN\x10\x012\xfe\x01\n" +
+	"ROLE_ADMIN\x10\x022\xfe\x01\n" +
 	"\vUserService\x12=\n" +
 	"\n" +
 	"CreateUser\x12\x16.api.CreateUserRequest\x1a\x17.api.CreateUserResponse\x124\n" +

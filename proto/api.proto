@@ -11,8 +11,9 @@ import "google/protobuf/wrappers.proto";
 //enums
 
 enum Role {
-  ROLE_USER = 0;
-  ROLE_ADMIN = 1;
+  ROLE_UNSPECIFIED = 0;
+  ROLE_USER = 1;
+  ROLE_ADMIN = 2;
 }
 
 
